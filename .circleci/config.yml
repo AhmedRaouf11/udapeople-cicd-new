@@ -216,8 +216,8 @@ jobs:
     steps:
       - checkout
       - install_awscli
-      - restore_cache:
-          keys: [backend-build]
+      # - restore_cache:
+      #     keys: [backend-build]
       - run:
           name: Run migrations
           command: |
@@ -230,7 +230,7 @@ jobs:
           command: |
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-              curl https://kvdb.io/3DPqqNbA2AJX7ZGBeRVyic/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d 'ahmed'
+              curl https://kvdb.io/3DPqqNbA2AJX7ZGBeRVyic/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
       - destroy-environment
           # workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
