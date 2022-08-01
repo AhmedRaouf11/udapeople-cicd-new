@@ -16,11 +16,13 @@
       wait_for_connection:
         timeout: 600
 
-    - name: "install python for Ansible."
+    - name: "install paython for ansible."
       become: true
-      apt:
-        name: python3
-        state: latest
+      raw: test -e /usr/bin/python3 || (apt update -y && apt install python3 -y)
+      changed_when: false
+
+    - setup:
+
 
   environment:
     TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION')}}"
