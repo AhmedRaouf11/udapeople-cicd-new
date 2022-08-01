@@ -255,17 +255,16 @@ jobs:
     docker:
       - image: cimg/base:stable
     steps:
-      - checkout:
+      - checkout
       - install_awscli
       - install_nodejs
       - restore_cache:
-          keys: [frontend-deps]
+          keys: [frontend-build]
       - run:
           name: Install dependencies
           command: |
             cd frontend
             npm install
-
       - run:
           name: Get backend url
           command: |
@@ -275,7 +274,6 @@ jobs:
               --output text)
             echo API_URL="http://${BACKEND_PUBLIC_IP}:3030" >> frontend/.env
             cat frontend/.env
-
       - run:
           name: Deploy frontend objects
           command: |
@@ -283,8 +281,7 @@ jobs:
             npm run build
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       - destroy-environment
-      - revert-migrations
-      # Here's where you will add some code to rollback on failure
+      - revert-migrations      # Here's where you will add some code to rollback on failure
       # Here's where you will add some code to rollback on failure      
 
   deploy-backend:
