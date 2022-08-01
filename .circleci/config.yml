@@ -254,6 +254,8 @@ jobs:
       - checkout
       - install_awscli
       - install_nodejs
+      - restore_cache:
+          keys: [frontend-deps]
       - run:
           name: Install dependencies
           command: |
@@ -261,19 +263,17 @@ jobs:
       - run:
           name: Get backend url
           command: |
-            export BACKEND_IP=$(aws ec2 describe-instances \
+            BACKEND_IP=$(aws ec2 describe-instances \
               --filters "Name=tag:Name, Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --query 'Reservations[*].Instances[*].PublicDnsName' \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text)
-            export API_URL="http://${BACKEND_IP}:3030"
-            echo "API_URL = ${API_URL}"
-            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+            
+            echo "API_URL="http://${BACKEND_PUBLIC_IP}:3030" >> frontend/.env
             cat frontend/.env
       - run:
           name: Deploy frontend objects
           command: |
             cd frontend
-            npm install
             npm run build
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       
@@ -295,21 +295,26 @@ jobs:
           fingerprints: ["3f:66:ca:ec:7c:fa:02:a7:fd:ed:5d:8e:c4:e6:58:99"]
       - attach_workspace:
           at: ~/
+      - restore_cache:
+          keys: [backend-deps]
       - run:
           name: Install dependencies
           command: |
             sudo apt -y install tar gzip curl
       - run:
-          name: Deploy backend
+          name: package backend
           command: |
             cd backend
             npm install
             npm run build
-            
+            tar backend -czvf artifact.tar.gz dist/* package*
             cd ..
-            tar -C backend -czvf artifact.tar.gz .
-            cp artifact.tar.gz .circleci/ansible/roles/deploy/files
             
+            cp backend/artifact.tar.gz .circleci/ansible/roles/deploy/files
+            
+      - run:
+          name: deploy backend
+          command: 
             export TYPEORM_MIGRATIONS_DIR=./migrations
             export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
             export TYPEORM_MIGRATIONS=./migrations/*.ts
