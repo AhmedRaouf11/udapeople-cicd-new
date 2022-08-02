@@ -230,12 +230,11 @@ jobs:
       - checkout
       - install_awscli
       - restore_cache:
-          keys: [backend-build]
+          keys: [backend-deps]
       - run:
           name: Run migrations
           command: |
             cd backend
-            npm install
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt
       - run:
@@ -244,9 +243,8 @@ jobs:
           command: |
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
+              echo sending to kvdp
               curl https://kvdb.io/${KVDB_BUCKET}/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
-            else
-              exit 1
             fi
       - destroy-environment
           # workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
