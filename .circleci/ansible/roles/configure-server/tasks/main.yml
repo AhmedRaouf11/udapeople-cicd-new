@@ -1,40 +1,16 @@
 ---
-- name: "install Node.js LTS"
+- name: Get NodeJS source
   become: true
   shell: |
-    curl -sL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-    sudo apt install -y nodejs
-
-    sudo npm install --global n
-    sudo n 13.8.0
-
-# - name: "installing npm"
-#   become: true
-#   apt:
-#     name: npm
-#     update_cache: yes
-#     state: latest
-
-- name: "update packages."
+    curl -fsSL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+- name: Install NodeJs 13
   become: true
-  apt:
-    update_cache: yes
-
-- name: "upgrade packages"
-  become: true
-  apt:
-    upgrade: yes  
-
-- name: "install Node.js LTS"
-  become: true
-  apt:
+  apt: 
     name: ["nodejs"]
     state: latest
     update_cache: yes
 
-- name: "install PM2 Globally"
-  npm:
+- name: Install PM2
+  npm:  
     name: pm2
     global: yes
-    production: yes
-    state: present
