@@ -22,7 +22,7 @@ commands:
             sudo add-apt-repository --yes --update ppa:ansible/ansible
             sudo apt -y install ansible
   
-  install-nodejs:
+  install_nodejs:
     description: Installs NodeJs 13
     steps:
       - run:
