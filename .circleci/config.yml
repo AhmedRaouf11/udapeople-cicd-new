@@ -329,7 +329,7 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - install-awscli
+      - install_awscli
       - run:
           name: Backend smoke test.
           command: |
