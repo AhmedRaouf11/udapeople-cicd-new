@@ -1,0 +1,17 @@
+(GITHUB)(URL01)
+	https://github.com/AhmedRaouf11/udapeople-cicd-new
+
+
+(S3)(URL02)
+	http://udapeople-307de4c.s3-website-us-east-1.amazonaws.com/#/employees
+
+
+(cloudfront)(URL3)
+	http://dczljgtscgt0b.cloudfront.net
+
+
+(backend api)
+	http://52.72.69.130:3030/api/status
+
+(prometheus)
+	http://54.152.156.161:9090/
